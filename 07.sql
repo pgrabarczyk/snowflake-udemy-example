@@ -1,0 +1,29 @@
+drop database EXERCISE_DB;
+create database EXERCISE_DB;
+use database EXERCISE_DB;
+
+CREATE STAGE MY_STAGE
+    URL = 's3://snowflake-assignments-mc/unstructureddata/';
+
+CREATE FILE FORMAT MY_FILE_FORMAT
+    TYPE = JSON;
+
+CREATE TABLE JSON_RAW  (
+    RAW VARIANT
+);
+
+LIST @MY_STAGE;
+
+SELECT t.$1, t.$2 FROM @MY_STAGE t;
+
+COPY INTO JSON_RAW
+FROM @MY_STAGE
+FILE_FORMAT = MY_FILE_FORMAT;
+
+SELECT COUNT(*) FROM JSON_RAW;
+
+SELECT * FROM JSON_RAW LIMIT 1;
+
+SELECT $1:last_name FROM JSON_RAW;
+
+SELECT RAW:last_name::string as last_name FROM JSON_RAW LIMIT 1;
